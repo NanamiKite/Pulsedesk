@@ -31,7 +31,7 @@ npm install
 确保系统安装了 Python，并安装蓝牙与 WebSocket 相关依赖包：
 
 ```bash
-pip install bleak websockets
+pip install -r requirements.txt
 ```
 
 ### 4. 配置你的设备 MAC 地址
