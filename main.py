@@ -1,8 +1,6 @@
 import asyncio
-import threading
 import websockets
 import json
-import os
 from bleak import BleakClient
 
 # ==================== 1. 配置项 ====================
