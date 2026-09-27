@@ -12,6 +12,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+device_config.json
 .venv/
 venv/
 ENV/

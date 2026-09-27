@@ -36,10 +36,12 @@ pip install -r requirements.txt
 
 ### 4. 配置你的设备 MAC 地址
 
-打开 `main.py` 文件，找到配置项，将 `WATCH_MAC` 修改为你自己手环/手表的蓝牙 MAC 地址：
+在项目根目录创建本地配置文件 `device_config.json`，填入你的手环/手表蓝牙 MAC 地址。该文件已加入 Git 忽略规则，不会被提交：
 
-```python
-WATCH_MAC = "XX:XX:XX:XX:XX:XX"  # 替换为你手表的实际 MAC 地址
+```json
+{
+  "watch_mac": "XX:XX:XX:XX:XX:XX"
+}
 ```
 
 ## 使用说明

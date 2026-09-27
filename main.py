@@ -2,10 +2,16 @@ import asyncio
 import websockets
 import json
 import time
+from pathlib import Path
 from bleak import BleakClient
 
 # ==================== 1. 配置项 ====================
-WATCH_MAC = "REDACTED"  #  请在此处替换为你手表的实际 MAC 地址
+DEVICE_CONFIG_PATH = Path(__file__).with_name("device_config.json")
+try:
+    with DEVICE_CONFIG_PATH.open(encoding="utf-8") as config_file:
+        WATCH_MAC = json.load(config_file).get("watch_mac", "")
+except FileNotFoundError:
+    WATCH_MAC = ""
 CHARACTERISTIC_UUID = "00002a37-0000-1000-8000-00805f9b34fb"  # 标准 BLE 心率特征 UUID
 HOST = "127.0.0.1"  # 强制使用 127.0.0.1，避免 IPv6 端口占用冲突
 PORT = 8765
@@ -364,6 +370,10 @@ async def robust_bluetooth_loop():
     while True:
         await notify_clients("--")
         try:
+            if not WATCH_MAC:
+                print("[BLE] 请在 device_config.json 中设置 watch_mac")
+                await asyncio.sleep(2)
+                continue
             print(f"[BLE] Searching for device: {WATCH_MAC}")
             # 1. 显式设定 timeout=12.0，避免 WinRT 驱动死锁/被动 Cancelled
             async with BleakClient(WATCH_MAC, timeout=12.0) as client:
