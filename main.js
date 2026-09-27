@@ -59,14 +59,12 @@ function startPythonBackend() {
  */
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 300,
-        height: 160,
-        minWidth: 180,            // 允许拉伸的最小宽度
-        minHeight: 100,           // 允许拉伸的最小高度
+        width: 220,
+        height: 60,
         transparent: true,        // 窗口背景透明
         frame: false,             // 无边框/无标题栏
         alwaysOnTop: true,        // 永远置顶
-        resizable: true,          // 允许鼠标拖拽边缘自由调整大小
+        resizable: false,         // 根据页面内容和缩放设置自动调整
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
@@ -83,16 +81,13 @@ function createWindow() {
     });
 }
 
-// 监听来自网页端 (HTML) 齿轮按钮的展开/收起通知，动态调整窗口高度
-ipcMain.on('resize-window', (event, expanded) => {
-    if (mainWindow) {
-        const [w, h] = mainWindow.getSize();
-        if (expanded) {
-            mainWindow.setSize(w, Math.max(h, 280)); // 展开控制面板时放大高度
-        } else {
-            mainWindow.setSize(w, 160); // 收起控制面板时还原高度
-        }
-    }
+// 使用页面的实际尺寸，避免胶囊外留下大块透明空白。
+ipcMain.on('resize-window', (event, size) => {
+    if (!mainWindow || event.sender !== mainWindow.webContents || !size) return;
+    if (!Number.isFinite(size.width) || !Number.isFinite(size.height)) return;
+    const width = Math.max(100, Math.min(600, Math.ceil(size.width)));
+    const height = Math.max(40, Math.min(600, Math.ceil(size.height)));
+    mainWindow.setContentSize(width, height);
 });
 
 // App 生命周期管理
